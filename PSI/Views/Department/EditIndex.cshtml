@@ -1,0 +1,101 @@
+﻿
+@{
+    ViewBag.Title = "EditIndex";
+    Layout = "~/Views/Shared/_lay.cshtml";
+}
+
+<script src="~/Content/lay/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/jquery.validate.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/messages_zh.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.all.js"></script>
+
+<script src="~/Content/lay/FrameWork.js" type="text/javascript"></script>
+
+<script>
+    //获取地址栏参数的方法
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+
+    var SID = $.request("ids");
+    //var accName = $.request(decodeURI(decodeURI("accName")));
+    //var remark = $.request("remark");
+
+    var departName1 = getQueryString("DepartName"); //获取地址栏参数
+    var departName = decodeURI(departName1); //只需要转一次码
+    $(function () {
+        if (!!SID) {
+            var data = { "SID": SID, "departName": departName}
+                    $("#form1").formSerialize(data);
+
+        }
+    });
+    function submitForm() {
+        $("#form1").validate({
+            rules: {
+                departName: "required",
+
+            }
+        });
+        if ($('#form1').valid()) {
+            //$.loading(true, "正在提交数据");
+            window.setTimeout(function () {
+                $.ajax({
+                    url: "/Department/EditDepartment/",
+                    data: $('#form1').serialize(),
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        //$.loading(false);
+                        if (data.Code == "0000") {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            //$.currentWindow().$("#currentTableId").trigger("reloadGrid");
+                            parent.location.reload();
+                            var msgs = (data.Msg);
+                            top.layer.msg(msgs, { icon: 1 });
+                            parent.layer.close(index);
+
+                        }
+                        else {
+                            top.layer.msg(data.Msg, { icon: 2 });
+
+                        }
+                    },
+                    error: function () {
+                        //$.loading(false);
+
+                    },
+                    complete: function () {
+                        //$.loading(false);
+                    }
+                });
+
+            }, 500);
+        }
+    }
+
+</script>
+<div style="margin-right:30px;padding-top:10px;">
+    <form id="form1" class="form-horizontal">
+        <div style="position:absolute; padding-right:10px;">
+            <table class="form">
+                <tr>
+                    <th class="formTitle">部门编号</th>
+                    <td class="formValue">
+                        <input id="SID" name="SID" type="text" class="form-control" placeholder="部门编号" readonly style="color:#999" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">部门名称</th>
+                    <td class="formValue">
+                        <input id="departName" name="departName" type="text" class="form-control" placeholder="部门名称" />
+                    </td>
+                </tr>
+ 
+            </table>
+        </div>
+    </form>
+</div>

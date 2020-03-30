@@ -1,0 +1,191 @@
+﻿
+@{
+    ViewBag.Title = "InStockBill";
+    Layout = "~/Views/Shared/_layui.cshtml";
+}
+<script src="~/Scripts/Common.js"></script>
+<form class="layui-form" lay-filter="bill">
+    <div class="layui-card" style="padding-top:5px;padding-left:10px">
+        <div class="layui-btn-container">
+            <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" lay-submit lay-filter="bill">保存</button>
+            <button type="button" class="layui-btn layui-btn-radius">审核</button>
+            <button type="button" class="layui-btn layui-btn-radius layui-btn-danger">反审</button>
+            <button type="button" class="layui-btn layui-btn-radius layui-btn-warm">打印</button>
+        </div>
+    </div>
+    <div class="layui-card" style="padding-bottom:5px">
+        <div class="layui-form-item">
+            <div class="layui-form-label">客户</div>
+            <div class="layui-input-inline">
+                <input type="text" name="ClientName" class="layui-input" id="ClientName" />
+            </div>
+            <div class="layui-form-label">电话</div>
+            <div class="layui-input-inline">
+                <input type="text" name="Phone" class="layui-input" id="Phone" />
+            </div>
+            <div class="layui-form-label">日期</div>
+            <div class="layui-input-inline">
+                <input type="text" name="BillDate" class="layui-input" id="BillDate" />
+            </div>
+            <div class="layui-form-label">客户编码</div>
+            <div class="layui-input-inline">
+                <input type="text" name="SID" class="layui-input" id="SID" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-form-label">地址</div>
+            <div class="layui-input-inline">
+                <input type="text" name="Address" class="layui-input" id="Address" />
+            </div>
+            <div class="layui-form-label">备注</div>
+            <div class="layui-input-inline">
+                <input type="text" name="Remark" class="layui-input" id="Remark" />
+            </div>
+            <div class="layui-form-label">仓库</div>
+            <div class="layui-input-inline">
+                <select name="WareHouseID" class="layui-input" id="WareHouseID">
+                    <option value="">==请选择==</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="layui-card">
+    <table id="table" class="layui-hide" lay-filter="table"></table>
+</div>
+<script type="text/html" id="rowTool">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="toolbar" lay-filter="table">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+    </div>
+</script>
+<script type="text/javascript">
+    var InitTable;
+    var Detail = [];
+    layui.config({
+        base: '{/}../Content/yutons/'
+    })
+    layui.use(['form', 'table', 'yutons_sug', 'laydate'], function () {
+        var form = layui.form, table = layui.table, yutons_sug = layui.yutons_sug, laydate = layui.laydate;
+        var strdate = new Date().Format("yyyy-MM-dd");
+        laydate.render({
+            elem: '#BillDate',//制定元素
+            type: 'date',
+            show: false,//默认显示
+            position: 'fixed',
+            value: strdate,
+        });
+        yutons_sug.render({
+            id: "ClientName", //设置容器唯一id
+            id1: "ClientCode",
+            id2: "SID",
+            id3: "Address",
+            id4: "Phone",
+            height: "260",
+            width: "480",
+            cols: [[
+                { field: 'ClientCode', title: '企业税号', width: '180' },
+                { field: 'ClientName', title: '企业名称', width: '290' },
+                { field: 'SID', title: '编号', width: '40', hide: true },
+                { field: 'Phone', title: '编号', width: '40', hide: true },
+                { field: 'Address', title: '编号', width: '40', hide: true }
+            ]], //设置表头
+            type: 'sugTable', //设置输入框提示类型：sug-下拉框，sugTable-下拉表格
+            url: "/Purchase/GetClientList?param=" //设置异步数据接口,url为必填项,params为字段名
+        });
+        form.render();
+        $.ajax({
+            url: '/Purchase/WareHouseList',
+            type: 'post',
+            dataType: 'json',
+            success: function (backData) {
+                $.each(backData, function (key, val) {
+                    var opt = $("<option></option>").val(val.value).html(val.text);
+                    $('#WareHouseID').append(opt);
+                    form.render('select');
+                });
+            }
+        });
+
+        var NewRow = {
+            ProName: '',
+            Specs: '',
+            Model: '',
+            Unit: '',
+            Number: 0,
+            AssistUnit: '',
+            AssistNumber: 0,
+            Price: 0,
+            Amount: 0,
+            BarCode: '',
+            FactryName: ''
+        }
+        InitTable = table.render({
+            elem: '#table',
+            id: 't1',
+            height: 'full-220',
+            toolbar: '#toolbar',
+            defaultToolbar: [],
+            data: Detail,
+            cols: [[
+                { type: 'numbers', title: '编号', width: 50, fixed: 'fixed' },
+                { field: 'ProName', width: 150, title: '商品名称', align: 'center', edit: 'text' },
+                { field: 'Specs', width: 100, title: '规格', align: 'center' },
+                { field: 'Model', width: 100, title: '型号', align: 'center' },
+                { field: 'MainUnitName', width: 120, title: '计量单位', align: 'center' },
+                { field: 'Number', width: 100, title: '数量', align: 'center', edit: 'text' },
+                { field: 'AssistUnitName', width: 120, title: '辅助单位', align: 'center' },
+                { field: 'AssistNumber', width: 100, title: '数量', align: 'center', edit: 'text' },
+                { field: 'Price', width: 100, title: '单价', align: 'center', edit: 'text' },
+                { field: 'Amount', width: 120, title: '金额', align: 'center' },
+                { field: 'BarCode', width: 90, title: '条码', align: 'center', hide: true },
+                { field: 'FactryName', width: 90, title: '生产厂家', align: 'center', hide: true },
+                { fixed: 'right', width: 150, align: 'center', toolbar: '#rowTool' }
+            ]],
+            page: false
+        });
+        table.on('toolbar(table)', function (obj) {
+            if (obj.event === "add") {
+                layer.open({
+                    id: 'selectPro',
+                    type: 2,
+                    title: false,
+                    content: '/Purchase/ProductSelect',
+                    zIndex: 10000,
+                    area: ['750px', '465px'],
+                    closeBtn: 1
+                })
+            }
+        })
+        form.on('submit(bill)', function (obj) {           
+            var MainBill = obj.field;         
+            var datas = table.cache.t1;
+            var d = Array.isArray(datas);
+            if (d) {
+                var DetailBill = datas;
+            }
+            let bill = { mainBill, DetailBill };
+            var str = JSON.stringify(bill);
+            return false;
+        })
+    });
+    function UpdateTable(item) {
+        var table = layui.table;
+        var datas = table.cache.t1;
+        var d = Array.isArray(datas);
+        if (d) {
+            datas.push(item);
+        } else {
+            datas = [];
+            datas.push(item);
+        }
+        InitTable.reload({
+            data: datas
+        });
+
+    }
+</script>
+
+

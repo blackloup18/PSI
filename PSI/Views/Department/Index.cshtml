@@ -1,0 +1,184 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_lay.cshtml";
+}
+
+<script src="~/Content/lay/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/jquery.validate.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/messages_zh.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.all.js"></script>
+<script src="~/Content/lay/FrameWork.js" type="text/javascript"></script>
+
+<div class="layuimini-container">
+    <div class="layuimini-main">
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                      
+                        <div class="layui-btn-group" style="float:right">
+                            <button class="layui-btn data-add-btn" type="button"><i class="layui-icon">&#xe61f;</i> 添加</button>
+                           
+                        </div>
+                    </div>
+                </form>
+            </div>
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+        </script>
+    </div>
+</div>
+<script src="~/Content/lay/lib/layui-v2.5.4/layui.js" charset="utf-8"></script>
+
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            url: '/Department/DepartmentList',
+            height: 'full-155',
+
+            cols: [[
+                { type: "radio", width: 50, fixed: "left" },
+                { field: 'ID', width: 80, title: 'ID', sort: true, hide: true },
+                { type: "numbers", width: 50, align: 'center' },
+                { field: 'SID', width: 200, title: '部门编号', sort: true, align: 'center' },
+                { field: 'DepartName', width: 80, title: '部门名称', align: 'center' },
+                
+             
+                { field: 'Creator', width: 120, title: '创建人', align: 'center' },
+                { field: 'CreatDate', width: 150, title: '创建日期', sort: true, align: 'center' },
+                { title: '操作', minWidth: 50, templet: '#currentTableBar', fixed: "right", align: "center" }
+            ]],
+
+            page: true
+        });
+        //var $ = layui.$, active = {
+        //    reload: function () {
+
+        //        var accName = $("#accName").val();
+
+        //            table.reload('currentTableId',
+        //                {
+        //                    page:
+        //                    {
+        //                        curr: 1 //重新从第 1 页开始
+        //                    }
+        //                    , where: { accName: accName }//这里传参  向后台
+
+        //                    , method: 'get'
+        //                });
+
+        //    }
+        //};
+
+        //form.on('submit(data-search-btn)', function() {
+        //    var type = 'reload';
+        //    active[type] ? active[type].call(this) : '';
+        //});
+
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function () {
+            var accName = $("#accName").val();
+
+            //执行搜索重载
+            table.reload('currentTableId', {
+
+                method: 'get'
+
+                , where: {
+                    accName: accName
+                }
+                , page: {
+                    curr: 1
+                },
+            });
+
+        });
+
+        // 监听添加操作
+        $(".data-add-btn").on("click", function () {
+
+            $.FromOpen('DepartmentFromAdd', '新增部门', '/Department/AddIndex', '600px', '180px', '1000');
+        });
+        // 监听修改操作
+        $(".data-edit-btn").on("click", function (obj) {
+            var data = obj.data; //获得当前行数据
+
+            var $this = $(this);
+            var tr = $this.parents('tr');
+            var trIndex = JSON.stringify(data).accName;
+            var url = "/Department/EditIndex" + "?ids=" + trIndex;
+            $.FromOpen('DepartmentFromAdd', '修改部门', url, '600px', '220px', '1000');
+        });
+        // 监听删除操作
+        $(".data-delete-btn").on("click", function () {
+            var checkStatus = table.checkStatus('currentTableId')
+                , data = checkStatus.data;
+            layer.alert(JSON.stringify(data));
+        });
+
+
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+
+                var ids = data.SID;
+                var DepartName = data.DepartName;
+
+                var url = "/Department/EditIndex" + "?ids=" + ids + "&DepartName=" + encodeURI(encodeURI(DepartName));
+                $.FromOpen('DepartmentFromEdit', '修改部门', url, '600px', '220px', '1000');
+            } else if (obj.event === 'delete') {
+                var ids = data.SID;
+                layer.confirm('真的删除行么', function (index) {
+                    window.setTimeout(function () {
+                        $.ajax({
+                            url: "/Department/DelDepartment/",
+                            data: { SID: ids },
+                            type: "post",
+                            dataType: "json",
+                            success: function (data) {
+                                //$.loading(false);
+                                if (data.code == "0000") {
+                                    top.layer.msg(data.result, { icon: 2 });
+                                    parent.location.reload();
+                                }
+                                else {
+
+                                    obj.del();
+                                    layer.close(index);
+                                }
+
+
+                            },
+                            error: function () {
+                                //$.loading(false);
+
+                            },
+                            complete: function () {
+                                //$.loading(false);
+                            }
+                        });
+
+                    }, 500);
+
+                });
+            }
+           
+        });
+
+    });
+</script>

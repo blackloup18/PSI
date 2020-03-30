@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewData["Title"] = "EditIndex";
+    Layout = "~/Views/Shared/_lay.cshtml";
+}
+<script src="~/Content/lay/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/jquery.validate.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/messages_zh.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.all.js"></script>
+
+<script src="~/Content/lay/FrameWork.js" type="text/javascript"></script>
+
+<script>
+    //获取地址栏参数的方法
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+
+    var accountID = $.request("ids");
+    //var accName = $.request(decodeURI(decodeURI("accName")));
+    //var remark = $.request("remark");
+    var _t = getQueryString("accName"); //获取地址栏参数
+    var accName = decodeURI(_t); //只需要转一次码
+    //var databasePath = $.request("databasePath");
+    var databasePath1 = getQueryString("databasePath"); //获取地址栏参数
+    var databasePath = decodeURI(databasePath1); //只需要转一次码
+    var remark1 = getQueryString("remark"); //获取地址栏参数
+    var remark = decodeURI(remark1); //只需要转一次码
+    $(function () {
+        if (!!accountID) {
+            var data = { "accountID": accountID, "accountName": accName, "databasePath": databasePath, "remark": remark}
+                    $("#form1").formSerialize(data);
+                
+        }
+    });
+    function submitForm() {
+        $("#form1").validate({
+            rules: {
+                accountName: "required",
+                databasePath: "required",
+            }
+        });
+        if ($('#form1').valid()) {
+            //$.loading(true, "正在提交数据");
+            window.setTimeout(function () {
+                $.ajax({
+                    url: "/Role/EditRole/",
+                    data: $('#form1').serialize(),
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        //$.loading(false);
+                        if (data.code == "9999") {
+                            top.layer.msg(data.result, { icon: 2 });
+                        }
+                        else {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            //$.currentWindow().$("#currentTableId").trigger("reloadGrid");
+                            parent.location.reload();
+                            var msgs = (data.result);
+                            top.layer.msg(msgs, { icon: 1 });
+                            parent.layer.close(index);
+                            
+                        }
+                        
+
+                    },
+                    error: function () {
+                        //$.loading(false);
+
+                    },
+                    complete: function () {
+                        //$.loading(false);
+                    }
+                });
+
+            }, 500);
+        }
+    }
+
+</script>
+<div style="margin-right:30px;padding-top:10px;">
+    <form id="form1" class="form-horizontal">
+        <div style="position:absolute; padding-right:10px;">
+            <table class="form">
+                <tr>
+                    <th class="formTitle">账套编号</th>
+                    <td class="formValue">
+                        <input id="accountID" name="accountID" type="text" class="form-control" placeholder="账套编号" readonly style="color:#999" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">账套名称</th>
+                    <td class="formValue">
+                        <input id="accountName" name="accountName" type="text" class="form-control" placeholder="账套名称" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">保存路径</th>
+                    <td class="formValue">
+                        <input id="databasePath" name="databasePath" type="text" class="form-control" placeholder="保存路径" readonly style="color:#999"/>
+                        <input type=button value="选择" onclick="browseFolder('databasePath')">
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">备注</th>
+                    <td class="formValue">
+                        <textarea id="remark" name="remark" class="form-control input-sm" style="height: 60px;"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+

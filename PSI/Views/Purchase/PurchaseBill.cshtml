@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "PurchaseBill";
+    Layout = "~/Views/Shared/_layui.cshtml";
+}
+<form class="layui-form" lay-filter="bill" id="bill">
+    <div class="layui-card" style="padding-top:5px;padding-left:10px">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-radius layui-btn-normal" lay-filter="bill" lay-submit>保存</button>
+            <button type="button" class="layui-btn layui-btn-radius">审核</button>
+            <button type="button" class="layui-btn layui-btn-radius layui-btn-danger">反审</button>
+            <button type="button" class="layui-btn layui-btn-radius layui-btn-warm">打印</button>
+        </div>
+    </div>
+    <div class="layui-card" style="padding-bottom:5px">
+        <div class="layui-form-item">
+            <div class="layui-form-label">客户</div>
+            <div class="layui-input-inline">
+                <input type="text" name="ClientName" class="layui-input" />
+            </div>
+            <div class="layui-input-inline" style="display:none">
+                <input type="text" name="SID" class="layui-input" />
+            </div>
+            <div class="layui-form-label">电话</div>
+            <div class="layui-input-inline">
+                <input type="text" name="Phone" class="layui-input" />
+            </div>
+            <div class="layui-form-label">日期</div>
+            <div class="layui-input-inline">
+                <input type="text" name="BillDate" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-form-label">地址</div>
+            <div class="layui-input-inline">
+                <input type="text" name="Address" class="layui-input" />
+            </div>
+            <div class="layui-form-label">备注</div>
+            <div class="layui-input-inline">
+                <input type="text" name="Remark" class="layui-input" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="layui-card">
+    <table id="table" class="layui-hide"></table>
+</div>
+<script type="text/javascript">
+    var Detail = [];
+    layui.use(['form', 'table'], function () {
+        var form = layui.form, table = layui.table;
+        form.render();
+        var NewRow = {
+            ProName: '',
+            Specs: '',
+            Model: '',
+            Unit: '',
+            Number: 0,
+            AssistUnit: '',
+            AssistNumber: 0,
+            Price: 0,
+            Amount: 0,
+            BarCode: '',
+            FactryName: ''
+        }
+        Detail.push(NewRow);
+        var InitTable = table.render({
+            elem: '#table',
+            id: 't1',
+            height: 'full-220',
+            data: Detail,
+            cols: [[
+                { type: 'numbers', title: '编号', width: 50, fixed: 'fixed' },
+                { field: 'ProName', width: 150, title: '商品名称', align: 'center', edit: 'text' },
+                { field: 'Specs', width: 100, title: '规格', align: 'center' },
+                { field: 'Model', width: 100, title: '型号', align: 'center' },
+                { field: 'Unit', width: 120, title: '计量单位', align: 'center' },
+                { field: 'Number', width: 100, title: '数量', align: 'center', edit: 'text' },
+                { field: 'AssistUnit', width: 120, title: '辅助单位', align: 'center' },
+                { field: 'AssistNumber', width: 100, title: '数量', align: 'center', edit: 'text' },
+                { field: 'Price', width: 100, title: '单价', align: 'center', edit: 'text' },
+                { field: 'Amount', width: 120, title: '金额', align: 'center' },
+                { field: 'BarCode', width: 90, title: '条码', align: 'center' },
+                { field: 'FactryName', width: 90, title: '生产厂家', align: 'center' },
+            ]],
+            page: false
+        });
+        form.on('submit(bill)', function (obj) {
+            console.log(obj);
+            return false;
+        })
+    })
+</script>
+

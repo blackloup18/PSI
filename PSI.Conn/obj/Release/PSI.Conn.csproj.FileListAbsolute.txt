@@ -1,0 +1,6 @@
+C:\Users\Administrator\source\repos\PSI\PSI.Conn\bin\Release\PSI.Conn.dll
+C:\Users\Administrator\source\repos\PSI\PSI.Conn\bin\Release\PSI.Conn.pdb
+C:\Users\Administrator\source\repos\PSI\PSI.Conn\obj\Release\PSI.Conn.csprojAssemblyReference.cache
+C:\Users\Administrator\source\repos\PSI\PSI.Conn\obj\Release\PSI.Conn.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\source\repos\PSI\PSI.Conn\obj\Release\PSI.Conn.dll
+C:\Users\Administrator\source\repos\PSI\PSI.Conn\obj\Release\PSI.Conn.pdb

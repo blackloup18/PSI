@@ -1,0 +1,11 @@
+C:\Users\Administrator\source\repos\PSI\PSI.Process\bin\Debug\PSI.Process.dll
+C:\Users\Administrator\source\repos\PSI\PSI.Process\bin\Debug\PSI.Process.pdb
+C:\Users\Administrator\source\repos\PSI\PSI.Process\bin\Debug\PSI.Conn.dll
+C:\Users\Administrator\source\repos\PSI\PSI.Process\bin\Debug\PSI.Models.dll
+C:\Users\Administrator\source\repos\PSI\PSI.Process\bin\Debug\PSI.Conn.pdb
+C:\Users\Administrator\source\repos\PSI\PSI.Process\bin\Debug\PSI.Models.pdb
+C:\Users\Administrator\source\repos\PSI\PSI.Process\obj\Debug\PSI.Process.csprojAssemblyReference.cache
+C:\Users\Administrator\source\repos\PSI\PSI.Process\obj\Debug\PSI.Process.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\source\repos\PSI\PSI.Process\obj\Debug\PSI.Process.csproj.CopyComplete
+C:\Users\Administrator\source\repos\PSI\PSI.Process\obj\Debug\PSI.Process.dll
+C:\Users\Administrator\source\repos\PSI\PSI.Process\obj\Debug\PSI.Process.pdb

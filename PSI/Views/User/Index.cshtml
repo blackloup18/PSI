@@ -1,0 +1,230 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Lay.cshtml";
+}
+<script src="~/Content/lay/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/jquery.validate.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/messages_zh.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.all.js"></script>
+<script src="~/Content/lay/FrameWork.js" type="text/javascript"></script>
+
+<div class="layuimini-container">
+    <div class="layuimini-main">
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-btn-group" style="float:right">
+                            <button class="layui-btn data-add-btn" type="button"><i class="layui-icon">&#xe61f;</i> 添加</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+        </script>
+    </div>
+</div>
+<script src="~/Content/lay/lib/layui-v2.5.4/layui.js" charset="utf-8"></script>
+
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            url: '/User/UserList',
+            height: 'full-155',
+          
+            cols: [[
+                { type: "radio", width: 50, fixed: "left" },
+                { field: 'ID', width: 80, title: 'ID', sort: true, hide: true },
+                { type: "numbers", width: 50, align: 'center' },
+                { field: 'LoginID', width: 80, title: '登录名', align: 'center' },
+                { field: 'SID', width: 200, title: '内部编号', sort: true, align: 'center' },
+                { field: 'UserName', width: 120, title: '员工姓名', align: 'center' },
+                { field: 'DepartID', width: 120, title: '部门ID', align: 'center', hide: true },
+                { field: 'DepartName', width: 120, title: '部门名称', align: 'center' },
+                { field: 'Phone', title: '联系电话', minWidth: 150, align: 'center' },
+                {
+                    field: 'Status', width: 80, title: '状态', align: 'center', event: 'changeStatus', templet: "#changeStatus", templet: function (d) {
+                        if (d.Status == "0") {
+                            return '<span class="layui-badge layui-bg-green">启用</span>';
+                        } else {
+                            return '<span class="layui-badge">禁用</span>'
+                        }
+                    }
+                },
+                { field: 'Creator', width: 120, title: '创建人', align: 'center' },
+                { field: 'CreatDate', width: 150, title: '创建日期', sort: true, align: 'center' },
+                { title: '操作', minWidth: 50, templet: '#currentTableBar', fixed: "right", align: "center" }
+            ]],
+
+            page: true
+        });
+        //var $ = layui.$, active = {
+        //    reload: function () {
+
+        //        var accName = $("#accName").val();
+
+        //            table.reload('currentTableId',
+        //                {
+        //                    page:
+        //                    {
+        //                        curr: 1 //重新从第 1 页开始
+        //                    }
+        //                    , where: { accName: accName }//这里传参  向后台
+
+        //                    , method: 'get'
+        //                });
+
+        //    }
+        //};
+
+        //form.on('submit(data-search-btn)', function() {
+        //    var type = 'reload';
+        //    active[type] ? active[type].call(this) : '';
+        //});
+
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function () {
+            var accName = $("#accName").val();
+
+            //执行搜索重载
+            table.reload('currentTableId', {
+
+                method: 'get'
+
+                , where: {
+                    accName: accName
+                }
+                , page: {
+                    curr: 1
+                },
+            });
+
+        });
+
+        // 监听添加操作
+        $(".data-add-btn").on("click", function () {
+
+            $.FromOpen('UserFromAdd', '新增账号', '/User/AddIndex', '600px', '280px', '1000');
+        });
+        // 监听修改操作
+        $(".data-edit-btn").on("click", function (obj) {
+            var data = obj.data; //获得当前行数据
+
+            var $this = $(this);
+            var tr = $this.parents('tr');
+            var trIndex = JSON.stringify(data).accName;
+            var url = "/User/EditIndex" + "?ids=" + trIndex;
+            $.FromOpen('UserFromAdd', '修改账号', url, '600px', '220px', '1000');
+        });
+        // 监听删除操作
+        $(".data-delete-btn").on("click", function () {
+            var checkStatus = table.checkStatus('currentTableId')
+                , data = checkStatus.data;
+            layer.alert(JSON.stringify(data));
+        });
+
+
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+
+                var ids = data.SID;
+                var LoginID = data.LoginID;
+                var UserName = data.UserName;
+                var Phone = data.Phone;
+                var url = "/User/EditIndex" + "?ids=" + ids + "&LoginID=" + encodeURI(encodeURI(LoginID)) + "&UserName=" + encodeURI(encodeURI(UserName)) + "&Phone=" + encodeURI(encodeURI(Phone));
+                $.FromOpen('UserFromEdit', '修改账号', url, '600px', '320px', '1000');
+            } else if (obj.event === 'delete') {
+                var ids = data.SID;
+                layer.confirm('真的删除行么', function (index) {
+                    window.setTimeout(function () {
+                        $.ajax({
+                            url: "/User/DelUser/",
+                            data: { SID: ids },
+                            type: "post",
+                            dataType: "json",
+                            success: function (data) {
+                                //$.loading(false);
+                                if (data.code == "0000") {
+                                    top.layer.msg(data.result, { icon: 2 });
+                                    parent.location.reload();
+                                }
+                                else {
+
+                                    obj.del();
+                                    layer.close(index);
+                                }
+
+
+                            },
+                            error: function () {
+                                //$.loading(false);
+
+                            },
+                            complete: function () {
+                                //$.loading(false);
+                            }
+                        });
+
+                    }, 500);
+
+                });
+            }
+            else if (obj.event === 'changeStatus') {
+                var ids = data.SID;
+                var status1 = data.Status;
+                var status = "0";
+                if (status1 == "0") {
+                    status = "1";
+                }
+                else if (status1 == "1") {
+                    status = "0";
+                }
+                $.ajax({
+                    url: "/User/ChangeStatus/",
+                    data: { SID: ids, status: status },
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        //$.loading(false);
+
+                        if (data.Code == "0000") {
+                            var msgs = (data.Msg);
+                            top.layer.msg(msgs, { icon: 1 });
+                            parent.location.reload();
+                        }
+                        else {
+
+                            top.layer.msg(data.Msg, { icon: 2 });
+                        }
+
+                    },
+                    error: function () {
+                        //$.loading(false);
+
+                    },
+                    complete: function () {
+                        //$.loading(false);
+                    }
+                });
+            }
+        });
+
+    });
+</script>

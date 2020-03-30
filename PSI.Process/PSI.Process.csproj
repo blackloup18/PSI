@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8FB9789C-7BA5-44C6-B9EB-283841A86B35}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PSI.Process</RootNamespace>
+    <AssemblyName>PSI.Process</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="accCtrl.cs" />
+    <Compile Include="AccountManage.cs" />
+    <Compile Include="Business\Bill.cs" />
+    <Compile Include="CHPYUtil.cs" />
+    <Compile Include="CommonTools.cs" />
+    <Compile Include="InventoryManage.cs" />
+    <Compile Include="loginManage.cs" />
+    <Compile Include="Main\ClassCtrl.cs" />
+    <Compile Include="Main\ClientCtrl.cs" />
+    <Compile Include="Main\DepartmentCtrl.cs" />
+    <Compile Include="Main\ProductCtrl.cs" />
+    <Compile Include="Main\UnitCtrl.cs" />
+    <Compile Include="Main\UserInfoCtrl.cs" />
+    <Compile Include="Main\WareHouseCtrl.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PSI.Conn\PSI.Conn.csproj">
+      <Project>{8c3930ee-00aa-41d4-bc6d-470496e4e3b0}</Project>
+      <Name>PSI.Conn</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PSI.Models\PSI.Models.csproj">
+      <Project>{f6c86a05-529a-424a-b5d4-887c35b7740f}</Project>
+      <Name>PSI.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

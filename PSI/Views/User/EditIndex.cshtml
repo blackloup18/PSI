@@ -1,0 +1,140 @@
+﻿
+@{
+    ViewBag.Title = "EditIndex";
+    Layout = "~/Views/Shared/_lay.cshtml";
+}
+
+<script src="~/Content/lay/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/jquery.validate.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/messages_zh.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.all.js"></script>
+
+<script src="~/Content/lay/FrameWork.js" type="text/javascript"></script>
+
+<script>
+    //获取地址栏参数的方法
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+    
+    var SID = $.request("ids");
+
+    //var accName = $.request(decodeURI(decodeURI("accName")));
+    //var remark = $.request("remark");
+    var _t = getQueryString("LoginID"); //获取地址栏参数
+    var LoginID = decodeURI(_t); //只需要转一次码
+    //var databasePath = $.request("databasePath");
+    var UserName1 = getQueryString("UserName"); //获取地址栏参数
+    var UserName = decodeURI(UserName1); //只需要转一次码
+    var Phone1 = getQueryString("Phone"); //获取地址栏参数
+    var Phone = decodeURI(Phone1); //只需要转一次码
+    $(function () {
+        $("#DSID").bindSelect({
+            url: "/Department/OptList",
+            id: "SID",
+            text: "DepartName"
+        });
+        if (!!SID) {
+            var data = { "SID": SID, "LoginID": LoginID, "UserName": UserName, "Phone": Phone}
+                    $("#form1").formSerialize(data);
+
+        }
+    });
+    function submitForm() {
+        $("#form1").validate({
+            rules: {
+                LoginID: "required",
+                Password: "required",
+            }
+        });
+        if ($('#form1').valid()) {
+            //$.loading(true, "正在提交数据");
+            window.setTimeout(function () {
+                $.ajax({
+                    url: "/User/EditUser/",
+                    data: $('#form1').serialize(),
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        //$.loading(false);
+                        if (data.Code == "0000") {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            //$.currentWindow().$("#currentTableId").trigger("reloadGrid");
+                            parent.location.reload();
+                            var msgs = (data.Msg);
+                            top.layer.msg(msgs, { icon: 1 });
+                            parent.layer.close(index);
+                           
+                        }
+                        else {
+                            top.layer.msg(data.Msg, { icon: 2 });
+
+                        }
+                    },
+                    error: function () {
+                        //$.loading(false);
+
+                    },
+                    complete: function () {
+                        //$.loading(false);
+                    }
+                });
+
+            }, 500);
+        }
+    }
+
+</script>
+<div style="margin-right:30px;padding-top:10px;">
+    <form id="form1" class="form-horizontal">
+        <div style="position:absolute; padding-right:10px;">
+            <table class="form">
+                <tr>
+                    <th class="formTitle">账套编号</th>
+                    <td class="formValue">
+                        <input id="SID" name="SID" type="text" class="form-control" placeholder="内部编号" readonly style="color:#999" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">登录名</th>
+                    <td class="formValue">
+                        <input id="LoginID" name="LoginID" type="text" class="form-control" placeholder="登录名" />
+                    </td>
+                </tr>
+                @*<tr >
+            <th class="formTitle">登陆密码</th>
+            <td class="formValue">
+                <input id="Password" name="Password" type="text" class="form-control" placeholder="登陆密码" />
+
+            </td>
+        </tr>*@
+                <tr>
+                    <th class="formTitle">部门:</th>
+                    <td class="formValue" >
+                        <select id="DSID" name="DSID" lay-search class="form-control" lay-verify="required" lay-filter="DSID">
+                            <option value="">==请选择==</option>
+                        </select>
+                    </td>
+
+                </tr>
+                <tr>
+                    <th class="formTitle">联系电话</th>
+                    <td class="formValue">
+                        <input id="Phone" name="Phone" type="text" class="form-control" placeholder="联系电话" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">员工姓名</th>
+                    <td class="formValue">
+                        <input id="UserName" name="UserName" type="text" class="form-control" placeholder="员工姓名" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+
+

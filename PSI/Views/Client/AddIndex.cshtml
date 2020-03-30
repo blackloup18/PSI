@@ -1,0 +1,328 @@
+﻿
+@{
+    ViewBag.Title = "AddIndex";
+    Layout = "~/Views/Shared/_lay.cshtml";
+}
+
+<div style="padding-top:10px;">
+    <form id="form1" class="form-horizontal">
+        <div style="position:absolute; padding:10px; ">
+            <table class="form">
+                <tr>
+                    <th class="formTitle"><span>*</span>客户名称</th>
+                    <td class="formValue">
+                        <input id="ClientName" name="ClientName" type="text" class="form-control" placeholder="客户名称" />
+                    </td>
+                    <th class="formTitle"><span>*</span>客户税号</th>
+                    <td class="formValue">
+                        <input id="ClientCode" name="ClientCode" type="text" class="form-control" placeholder="客户税号" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle"><span>*</span>客户类型</th>
+                    <td class="formValue">
+                        <select id="ClientType" name="ClientType" lay-search class="form-control" lay-verify="required" lay-filter="ClientType" style="width:92%">
+                            <option value="">==请选择==</option>
+                            <option value="C">供应商</option>
+                            <option value="G">客户</option>
+                        </select>
+                       
+                    </td>
+                    <th class="formTitle">地址</th>
+                    <td class="formValue">
+                        <input id="Address" name="Address" type="text" class="form-control" placeholder="地址" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">联系人</th>
+                    <td class="formValue">
+                        <input id="Contact" name="Contact" type="text" class="form-control" placeholder="联系人" />
+                    </td>
+                    <th class="formTitle">联系电话</th>
+                    <td class="formValue">
+                        <input id="Phone" name="Phone" type="text" class="form-control" placeholder="联系电话" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">微信</th>
+                    <td class="formValue">
+                        <input id="WeChat" name="WeChat" type="text" class="form-control" placeholder="微信" />
+                    </td>
+                    <th class="formTitle">QQ</th>
+                    <td class="formValue">
+                        <input id="QQ" name="QQ" type="text" class="form-control" placeholder="QQ" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">电子邮箱</th>
+                    <td class="formValue">
+                        <input id="Email" name="Email" type="text" class="form-control" placeholder="电子邮箱" />
+                    </td>
+                    <th class="formTitle">传真</th>
+                    <td class="formValue">
+                        <input id="Fax" name="Fax" type="text" class="form-control" placeholder="传真" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">银行</th>
+                    <td class="formValue">
+                        <input id="Bank" name="Bank" type="text" class="form-control" placeholder="银行" />
+                    </td>
+                    <th class="formTitle">账号</th>
+                    <td class="formValue">
+                        <input id="Account" name="Account" type="text" class="form-control" placeholder="账号" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">备注</th>
+                    <td class="formValue" >
+                        <input id="Remark" name="Remark" type="text" class="form-control" placeholder="备注" />
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+<style>
+    span{color:#ff0000}
+</style>
+@*<div class="layui-form-item">
+    <table class="layui-hide" id="table" lay-filter="test"></table>
+</div>*@
+@*<style>
+    th{text-align:right; font-weight:400; font-size:12px}
+    td {
+        padding: 5px;
+        font-weight: 400;
+        font-size: 12px
+    }
+    input{height:20px}
+</style>*@
+@*<script type="text/javascript">
+    layui.use(['form', 'table'], function () {
+        var form = layui.form, table = layui.table;
+        form.render();
+        var InitTable = table.render({
+            elem: '#table',
+            id:'t1',
+            url: '/Client/GetList',
+            height: 'full-100',
+            cols: [[
+                { type: 'numbers', title: '编号', width: 50, fixed: 'fixed' },
+                { type: "radio", width: 50, title: '选择', fixed: "left" },
+                { field: 'ID', width: 50, align: 'center', hide: true },
+                { field: 'SID', width: 50, align: 'center', hide: true},
+                { field: 'ClientType', width: 90, title: '类型',align: 'center' },
+                { field: 'ClientCode', width: 130, title: '单位税号',align: 'center' },
+                { field: 'ClientName', width: 200, title: '单位名称',align: 'center' },
+                { field: 'Contact', width: 80, title: '联系人',align: 'center' },
+                { field: 'Phone', width: 100, title: '联系电话',align: 'center' },
+                { field: 'Address', width: 180, title: '地址',align: 'center' },
+                { field: 'Email', width: 90, title: '电子邮箱',align: 'center' },
+                { field: 'Fax', width: 90, title: '传真', align: 'center' },
+                { field: 'QQ', width: 80, title: 'QQ',align: 'center' },
+                { field: 'WeChat', width: 80, title: '微信',align: 'center' },
+                { field: 'Status', width: 120, title: '状态',align: 'center' },
+                { field: 'Remark', width: 150, title: '备注',align: 'center' },
+                { field: 'Bank', width: 200, title: '开户银行', align: 'center' },
+                { field: 'Account', width: 120, title: '银行账号', align: 'center' },
+                { field: 'Creator', width: 50, title: '创建人', align: 'center', hide: true },
+                { field: 'CreatDate', width: 50, title: '创建日期', align: 'center', hide: true }
+            ]],
+            page: true,
+            limit: 20,
+            limits: [20, 40, 60, 80, 100],
+            text: { none: '无相关数据' },
+            toolbar: 'default',
+            defaultToolbar: ['filter', 'exports']
+        });
+        form.on('submit(query)', function (data) {
+            var param = data.field;
+            InitTable.reload({
+                where: param,
+                page: { curr: 1 }
+            });
+            return false;
+        });
+
+        //监听头工具栏事件
+        table.on('toolbar(test)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id)
+                , data = checkStatus.data; //获取选中的数据
+            switch (obj.event) {
+                case 'add':
+                    add();
+                    break;
+                case 'update':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else if (data.length > 1) {
+                        layer.msg('只能同时编辑一个');
+                    } else {
+                        layer.alert('编辑 [id]：' + checkStatus.data[0].bid);
+                    }
+                    break;
+                case 'delete':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else {
+                        layer.msg('删除');
+                    }
+                    break;
+            };
+        });
+        //监听行工具事件
+        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                , layEvent = obj.event; //获得 lay-event 对应的值
+            if (layEvent === 'detail') {
+                layer.msg('查看操作');
+            } else if (layEvent === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    // obj.del(); //删除对应行（tr）的DOM结构
+                    var params = {
+                        'bid': data.bid,
+                    }
+
+                    dele(params);
+                    layer.close(index);
+                    //向服务端发送删除指令
+                });
+            } else if (layEvent === 'edit') {
+
+                edit(data)
+            }
+        });
+        function edit(data) {
+            layer.open({
+                type: 2,
+                title: '修改',
+                area: ['500px', '300px'],
+                offset: '160px',
+                shadeClose: true, // 点击遮罩关闭
+                btn: ['保存', '取消'],
+                content: '/Client/EditIndex',
+                success: function (layero, index) { // 成功弹出后回调
+                    layer.iframeAuto(index);
+                    var body = layer.getChildFrame('body', index);  //巧妙的地方在这里哦
+                    body.contents().find("#bname").val(data.bname);
+                    body.contents().find("#price").val(data.price);
+                    body.contents().find("#bid").val(data.bid);
+                },
+
+                yes: function (index, layero) { // 保存按钮回调函数
+                    // 获取iframe层的body
+                    var body = layer.getChildFrame('body', index);  //巧妙的地方在这里哦
+                    // 找到隐藏的提交按钮模拟点击提交
+                    // body.find('#permissionSubmit').click();
+                    var name = body.contents().find("#bname").val();
+                    var price = body.contents().find("#price").val();
+                    var bid = body.contents().find("#bid").val();
+                    var params = {
+                        'bname': name,
+                        'price': price,
+                        'bid': bid
+                    };
+                    upbook(params);
+                    layer.close(index);
+                },
+                btn2: function (index, layero) { // 取消按钮回调函数
+                    layer.close(index); // 关闭弹出层
+                }
+
+
+            });
+        }
+
+
+
+
+        function add() {
+            layer.open({
+                type: 2,
+                title: '新增客户',
+                area: ['1000px', '600px'],
+                offset: '160px',
+                shadeClose: true, // 点击遮罩关闭
+                btn: ['保存', '取消'],
+                content: '/Client/AddIndex',
+                success: function (layero, index) { // 成功弹出后回调
+
+                },
+
+                yes: function (index, layero) { // 保存按钮回调函数
+                    // 获取iframe层的body
+                    // var body = layer.getChildFrame('body', index);
+                    // 找到隐藏的提交按钮模拟点击提交
+                    //  body.find('#permissionSubmit').click();
+                    layer.iframeAuto(index);
+                    var body = layer.getChildFrame('body', index);  //巧妙的地方在这里哦
+                    var bname = body.contents().find("#bname").val();
+                    var price = body.contents().find("#price").val();
+                    var params = {
+                        'bname': bname,
+                        'price': price,
+
+                    };
+                    addtabls(params);
+                    layer.close(index);
+                },
+                btn2: function (index, layero) { // 取消按钮回调函数
+                    layer.close(index); // 关闭弹出层
+                }
+
+
+            });
+        }
+
+        function upbook(params) {
+            $.ajax({
+                url: "bookAction.action?methodName=updeBook",
+                type: "post",
+                dataType: 'json',
+                data: params,
+                success: function (data) {
+                    layer.msg('修改成功');
+                    tables();
+                },
+                error: function (or) {
+                    alert('失败')
+                }
+            })
+        }
+
+        function addtabls(params) {
+            $.ajax({
+                url: "bookAction.action?methodName=adBook",
+                type: "post",
+                dataType: 'json',
+                data: params,
+                success: function (data) {
+                    layer.msg('新增成功');
+                    tables();
+                },
+                error: function (or) {
+                    alert('失败')
+                }
+            })
+        }
+
+
+        function dele(params) {
+            $.ajax({
+                url: "bookAction.action?methodName=dele",
+                type: "post",
+                dataType: 'json',
+                data: params,
+                success: function (data) {
+                    layer.msg('删除成功');
+                    tables();
+                },
+                error: function (or) {
+                    alert('失败')
+                }
+            })
+        }
+    })
+</script>*@

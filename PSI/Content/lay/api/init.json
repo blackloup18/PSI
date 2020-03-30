@@ -1,0 +1,174 @@
+{
+  "clearInfo": {
+    "clearUrl": "api/clear.json"
+  },
+  "homeInfo": {
+    "title": "首页",
+    "icon": "fa fa-home",
+    "href": "/Main/Default"
+  },
+  "logoInfo": {
+    "title": "管理系统",
+    "image": "/Content/lay/images/logo.png",
+    "href": ""
+  },
+  "menuInfo": {
+    "currency": {
+      "title": "系统管理",
+      "icon": "fa fa-gears",
+      "child": [
+
+        {
+          "title": "账号管理",
+          "href": "/User/Index",
+          "icon": "fa fa-users",
+          "target": "_self"
+        },
+        {
+          "title": "部门管理",
+          "href": "/Department/Index",
+          "icon": "fa fa-sitemap",
+          "target": "_self"
+        },
+        {
+          "title": "仓库管理",
+          "href": "/Warehouse/Index",
+          "icon": "fa fa-trello",
+          "target": "_self"
+        }
+      ]
+    },
+    "component": {
+      "title": "基础档案",
+      "icon": "fa fa-newspaper-o",
+      "child": [
+        {
+          "title": "计量单位管理",
+          "href": "/Unit/Index",
+          "icon": "fa fa-list-ol",
+          "target": "_self"
+        },
+        {
+          "title": "商品类别管理",
+          "href": "/ProductClass/Index",
+          "icon": "fa fa-list-ol",
+          "target": "_self"
+        },
+        {
+          "title": "商品管理",
+          "href": "/Product/Index",
+          "icon": "fa fa-list-ol",
+          "target": "_self"
+        },
+        {
+          "title": "客商管理",
+          "href": "/Client/Index",
+          "icon": "fa fa-list-ol",
+          "target": "_self"
+        }
+      ]
+    },
+    "other": {
+      "title": "采购管理",
+      "icon": "fa fa-shopping-cart",
+      "child": [
+        {
+          "title": "多级菜单",
+          "href": "",
+          "icon": "fa fa-meetup",
+          "target": "",
+          "child": [
+            {
+              "title": "按钮1",
+              "href": "page/button.html",
+              "icon": "fa fa-calendar",
+              "target": "_self",
+              "child": [
+                {
+                  "title": "按钮2",
+                  "href": "page/button.html",
+                  "icon": "fa fa-snowflake-o",
+                  "target": "_self",
+                  "child": [
+                    {
+                      "title": "按钮3",
+                      "href": "page/button.html",
+                      "icon": "fa fa-snowflake-o",
+                      "target": "_self"
+                    },
+                    {
+                      "title": "表单4",
+                      "href": "page/form.html",
+                      "icon": "fa fa-calendar",
+                      "target": "_self"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "采购单",
+          "href": "/Purchase/PurchaseIndex",
+          "icon": "fa fa-superpowers",
+          "target": "_self"
+        },
+        {
+          "title": "入库单",
+          "href": "/Purchase/InStockIndex",
+          "icon": "fa fa-superpowers",
+          "target": "_self"
+        }
+      ]
+    },
+	"other1": {
+      "title": "销售管理",
+      "icon": "fa fa-sellsy",
+      "child": [
+        {
+          "title": "销售订单",
+          "href": "page/error.html",
+          "icon": "fa fa-superpowers",
+          "target": "_self"
+        },
+		{
+          "title": "发货通知单",
+          "href": "page/error.html",
+          "icon": "fa fa-superpowers",
+          "target": "_self"
+        },
+		{
+          "title": "销售出库单",
+          "href": "page/error.html",
+          "icon": "fa fa-superpowers",
+          "target": "_self"
+        }
+      ]
+    },
+	"other2": {
+      "title": "仓库管理",
+      "icon": "fa fa-trello",
+      "child": [
+        {
+          "title": "库存管理",
+          "href": "/Inventory/Index",
+          "icon": "fa fa-superpowers",
+          "target": "_self"
+        },
+		{
+          "title": "仓库盘点",
+          "href": "page/error.html",
+          "icon": "fa fa-superpowers",
+          "target": "_self"
+        },
+		{
+          "title": "仓库调拨",
+          "href": "page/error.html",
+          "icon": "fa fa-superpowers",
+          "target": "_self"
+        }
+      ]
+    }
+  }
+}

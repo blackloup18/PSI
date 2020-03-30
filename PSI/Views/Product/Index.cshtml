@@ -1,0 +1,421 @@
+﻿
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_layui.cshtml";
+}
+<script src="~/Content/lay/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.all.js"></script>
+
+<script src="~/Content/lay/FrameWork.js" type="text/javascript"></script>
+<div class="layuimini-container">
+    <form lay-filter="query" id="f1" novalidate class="layui-form" style="padding:10px 10px 10px 10px">
+        <div class="layui-form-item" style="float:left">
+            <label class="layui-form-label" style="width:60px">商品编号</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" type="text" name="ProID" lay-filter="query" id="ProID" autocomplete="off" />
+            </div>
+            <label class="layui-form-label" style="width:60px">商品名称</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" type="text" name="ProName" lay-filter="query" id="ProName" autocomplete="off" />
+            </div>
+            <label class="layui-form-label" style="width:60px">型号</label>
+            <div class="layui-input-inline" style="width:120px">
+                <input class="layui-input" type="text" name="Models" lay-filter="query" id="Models" autocomplete="off" />
+            </div>
+            <label class="layui-form-label" style="width:60px">规格</label>
+            <div class="layui-input-inline" style="width:120px">
+                <input class="layui-input" type="text" name="Specs" lay-filter="query" id="Specs" autocomplete="off" />
+            </div>
+            <div class="layui-input-inline">
+                <button class="layui-btn data-add-btn" type="button" lay-submit lay-filter="query"><i class="layui-icon">&#xe615;</i> 查询</button>
+            </div>
+        </div>
+    </form>
+    <div class="layui-form-item">
+        <table class="layui-hide" id="table" lay-filter="test"></table>
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon">&#xe654;</i></button>
+                <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="update"><i class="layui-icon">&#xe642;</i></button>
+            </div>
+        </script>
+
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'table'], function () {
+        var form = layui.form, table = layui.table;
+        form.render();
+        var InitTable = table.render({
+            elem: '#table',
+            id: 't1',
+            url: '/Product/GetProductList',
+            height: 'full-100',
+            cols: [[
+                { type: 'numbers', title: '编号', width: 50, fixed: 'fixed' },
+                { type: "radio", width: 50, title: '选择', fixed: "left" },
+                { field: 'ID', width: 50, align: 'center', hide: true },
+                { field: 'SID', width: 50, align: 'center', hide: true },
+                { field: 'ProName', width: 130, title: '商品名称', align: 'center' },
+                { field: 'PinyinCode', width: 130, title: '拼音码', align: 'center' },
+                { field: 'ClassName', width: 130, title: '类别', align: 'center' },
+                { field: 'AssistCode', width: 100, title: '助记码', align: 'center' },
+                { field: 'Specs', width: 80, title: '规格', align: 'center' },
+                { field: 'Model', width: 100, title: '型号', align: 'center' },
+                { field: 'MainUnitName', width: 100, title: '主单位', align: 'center' },
+                {
+                    field: 'OnlyUnit', width: 120, title: '多计量单位', align: 'center', templet: function (d) {
+                        if (d.OnlyUnit == "0") {
+                            return '否';
+                        } else {
+                            return '是'
+                        }
+                    }
+                },
+                { field: 'AssistUnitName', width: 100, title: '辅助单位', align: 'center' },
+                { field: 'AssistRate', width: 80, title: '转化率', align: 'center' },
+                { field: 'IsFloat', width: 80, title: '是否浮动', align: 'center' },
+                { field: 'BarCode', width: 90, title: '条码', align: 'center' },
+                { field: 'FactryName', width: 90, title: '生产厂家', align: 'center' },
+                
+                {
+                    field: 'Status', width: 80, title: '状态', align: 'center', event: 'changeStatus', templet: "#changeStatus", templet: function (d) {
+                        if (d.Status == "0") {
+                            return '<span class="layui-badge layui-bg-green">启用</span>';
+                        } else {
+                            return '<span class="layui-badge">禁用</span>'
+                        }
+                    }
+                },
+                { field: 'Remark', width: 150, title: '备注', align: 'center' },
+               
+                { field: 'Creator', width: 50, title: '创建人', align: 'center', hide: true },
+                { field: 'CreatDate', width: 50, title: '创建日期', align: 'center', hide: true }
+            ]],
+            page: true,
+            limit: 20,
+            limits: [20, 40, 60, 80, 100],
+            text: { none: '无相关数据' },
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports']
+        });
+        form.on('submit(query)', function (data) {
+            var param = data.field;
+            InitTable.reload({
+                where: param,
+                page: { curr: 1 }
+            });
+            return false;
+        });
+
+        //监听头工具栏事件
+        table.on('toolbar(test)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id)
+                , data = checkStatus.data; //获取选中的数据
+            switch (obj.event) {
+                case 'add':
+                    top.layer.open({
+                        id: 'addPro',
+                        type: 2,
+                        title: false,
+                        content: '/Product/AddProduct',
+                        zIndex: 10000,
+                        area: ['600px', '460px'],
+                        closeBtn: 1,
+                        end: function () {
+                            InitTable.reload();
+                        }
+                    })
+
+                    break;
+                case 'update':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else if (data.length > 1) {
+                        layer.msg('只能同时编辑一个');
+                    } else {
+                        edit(data);
+
+                    }
+                    break;
+                case 'delete':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else {
+                        layer.msg('删除');
+                    }
+                    break;
+            };
+        });
+        //监听行工具事件
+        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                , layEvent = obj.event; //获得 lay-event 对应的值
+            if (layEvent === 'detail') {
+                layer.msg('查看操作');
+            } else if (layEvent === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    // obj.del(); //删除对应行（tr）的DOM结构
+                    var params = {
+                        'bid': data.ID,
+                    }
+
+                    dele(params);
+                    layer.close(index);
+                    //向服务端发送删除指令
+                });
+            } else if (layEvent === 'edit') {
+
+                edit(data)
+            }
+            else if (obj.event === 'changeStatus') {
+                var ids = data.SID;
+                var status1 = data.Status;
+                var status = "0";
+                if (status1 == "0") {
+                    status = "1";
+                }
+                else if (status1 == "1") {
+                    status = "0";
+                }
+                $.ajax({
+                    url: "/Client/ChangeStatus/",
+                    data: { SID: ids, status: status },
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        //$.loading(false);
+
+                        if (data.Code == "0000") {
+                            var msgs = (data.Msg);
+                            top.layer.msg(msgs, { icon: 1 });
+                            parent.location.reload();
+                        }
+                        else {
+
+                            top.layer.msg(data.Msg, { icon: 2 });
+                        }
+
+                    },
+                    error: function () {
+                        //$.loading(false);
+
+                    },
+                    complete: function () {
+                        //$.loading(false);
+                    }
+                });
+            }
+        });
+        function edit(data) {
+            top.layer.open({
+                id: 'ProductFromEditIndex',
+                btn: ['确定', '关闭'],
+                type: 2,
+                title: '修改商品',
+                area: ['1000px', '600px'],
+                fixed: false, //不固定
+                content: '/Product/EditIndex?id=' + data[0].SID,
+                zIndex:1000,
+                success: function (layero, index) { // 成功弹出后回调
+                    layer.iframeAuto(index);
+                    var body = layer.getChildFrame('body', index);  //巧妙的地方在这里哦
+                    body.contents().find("#SID").val(data[0].SID);
+                    body.contents().find("#ProName").val(data[0].ProName);
+                    body.contents().find("#AssistCode").val(data[0].AssistCode);
+                    body.contents().find("#BarCode").val(data[0].BarCode);
+                    body.contents().find("#Specs").val(data[0].Specs);
+                    body.contents().find("#Model").val(data[0].Model);
+                    body.contents().find("#FactryName").val(data[0].FactryName);
+                    body.contents().find("#Remark").val(data[0].Remark);
+
+                },
+
+                yes: function (index, layero) { // 保存按钮回调函数
+                    var body = top.layer.getChildFrame('body', index);
+                    var iframeWin = top.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：
+                    iframeWin.submitForm();
+                    //// 获取iframe层的body
+                    //var body = layer.getChildFrame('body', index);  //巧妙的地方在这里哦
+                    //// 找到隐藏的提交按钮模拟点击提交
+                    //// body.find('#permissionSubmit').click();
+                    //var SID = body.contents().find("#SID").val();
+                    //var ProName = body.contents().find("#ProName").val();
+                    //var AssistCode = body.contents().find("#AssistCode").val();
+                    //var BarCode = body.contents().find("#BarCode").val();
+                    //var Specs = body.contents().find("#Specs").val();
+                    //var Model = body.contents().find("#Model").val();
+                    //var FactryName = body.contents().find("#FactryName").val();
+                    //var Remark = body.contents().find("#Remark").val();
+                    //var pudata = body.contents().find("#unittable").data;
+                    
+
+                    //var params = {
+                    //    'SID': SID,
+                    //    'ProName': ProName,
+                    //    'AssistCode': AssistCode,
+                    //    'BarCode': BarCode,
+                    //    'Specs': Specs,
+                    //    'Model': Model,
+                    //    'FactryName': FactryName,
+                    //    'Remark': Remark,
+                    //    'Unit': pudata,
+
+                    //};
+                    //upbook(params);
+                    //layer.close(index);
+                    //localStorage.removeItem("Unitdata");
+                },
+                btn2: function (index, layero) { // 取消按钮回调函数
+                   
+                    localStorage.removeItem("Unitdata");
+                    return true;
+                }
+
+
+            });
+        }
+
+
+
+
+        function add() {
+            //$.FromOpen('ProductFromAddIndex', '新增计量单位', '/Product/AddIndex', '1000px', '600px', '1000');
+            top.layer.open({
+                id: 'ProductFromAddIndex',
+                btn: ['确定', '关闭'],
+                type: 2,
+                title: '新增商品',
+                area: ['1000px', '600px'],
+                fixed: false, //不固定
+                content: '/Product/AddIndex',
+                zIndex: '1000',
+                yes: function (index, layero) {
+                    var body = top.layer.getChildFrame('body', index);
+                    var iframeWin = top.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：
+                    iframeWin.submitForm();
+                },
+                btn2: function (index, layero) {
+                    localStorage.removeItem("Unitdata");
+                    return true;
+                }
+            });
+            //layer.open({
+            //    type: 2,
+            //    title: '新增产品',
+            //    area: ['1000px', '600px'],
+            //    offset: '160px',
+            //    shadeClose: true, // 点击遮罩关闭
+            //    btn: ['保存', '取消'],
+            //    content: '/Product/AddIndex',
+            //    success: function (layero, index) { // 成功弹出后回调
+
+            //    },
+
+            //    yes: function (index, layero) { // 保存按钮回调函数
+            //        // 获取iframe层的body
+            //        // var body = layer.getChildFrame('body', index);
+            //        // 找到隐藏的提交按钮模拟点击提交
+            //        //  body.find('#permissionSubmit').click();
+            //        layer.iframeAuto(index);
+            //        var body = layer.getChildFrame('body', index);  //巧妙的地方在这里哦
+            //        var ProName = body.contents().find("#ProName").val();
+            //        var AssistCode = body.contents().find("#AssistCode").val();
+            //        var BarCode = body.contents().find("#BarCode").val();
+            //        var Specs = body.contents().find("#Specs").val();
+            //        var Model = body.contents().find("#Model").val();
+            //        var FactryName = body.contents().find("#FactryName").val();
+            //        var Remark = body.contents().find("#Remark").val();
+            //        var pudata = body.contents().find("#table").data;
+
+            //        var params = {
+            //            'ProName': ProName,
+            //            'AssistCode': AssistCode,
+            //            'BarCode': BarCode,
+            //            'Specs': Specs,
+            //            'Model': Model,
+            //            'FactryName': FactryName,
+            //            'Remark': Remark,
+            //            'Unit':pudata,
+
+            //        };
+            //        addtabls(params);
+            //        layer.close(index);
+            //        localStorage.removeItem("Unitdata");
+            //    },
+            //    btn2: function (index, layero) { // 取消按钮回调函数
+            //        layer.close(index); // 关闭弹出层
+            //        localStorage.removeItem("Unitdata");
+            //    }
+
+
+            //});
+        }
+
+        function upbook(params) {
+            $.ajax({
+                url: "/Product/EditProduct",
+                type: "post",
+                dataType: 'json',
+                data: params,
+                success: function (data) {
+                    if (data.Code == "0000") {
+
+
+                        var msgs = (data.Msg);
+                        top.layer.msg(msgs, { icon: 1 });
+                        parent.location.reload();
+
+                    }
+                    else {
+                        top.layer.msg(data.Msg, { icon: 2 });
+
+                    }
+                    layer.msg('修改成功');
+                    tables();
+                },
+                error: function (or) {
+                    alert('失败')
+                }
+            })
+        }
+
+        function addtabls(params) {
+            $.ajax({
+                url: "/Product/AddProduct",
+                type: "post",
+                dataType: 'json',
+                data: params,
+                success: function (data) {
+                    layer.msg('新增成功');
+                    tables();
+                },
+                error: function (or) {
+                    alert('失败')
+                }
+            })
+        }
+
+
+        function dele(params) {
+            $.ajax({
+                url: "/",
+                type: "post",
+                dataType: 'json',
+                data: params,
+                success: function (data) {
+                    layer.msg('删除成功');
+                    tables();
+                },
+                error: function (or) {
+                    alert('失败')
+                }
+            })
+        }
+    })
+</script>
+
+
+

@@ -1,0 +1,100 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_layui.cshtml";
+}
+<style>
+    .layui-input, .layui-select {
+        height: 32px;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 140px;
+    }
+</style>
+<table class="layui-hide" id="table" lay-filter="table"></table>
+<script type="text/html" id="toolbar">
+    <div class="layui-form" lay-filter="query" id="query">
+        <div class="layui-form-item" style="margin:1px 1px 1px 1px">
+            <div class="layui-input-inline">
+                <select class="layui-input" name="HouseID" lay-filter="HouseID" id="HouseID">
+                    <option value="" selected>全部仓库</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <input class="layui-input" placeholder="商品名称" autocomplete="off" name="ProName" lay-filter="ProName" id="ProName" />
+            </div>
+            <div class="layui-input-inline">
+                <input class="layui-input" placeholder="辅助码" autocomplete="off" name="AssistCode" lay-filter="AssistCode" id="AssistCode" />
+            </div>
+            <div class="layui-input-inline">
+                <button class="layui-btn layui-btn-sm" id="query" lay-event="query"><i class="layui-icon">&#xe615;</i></button>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="bar">
+    <a class="layui-btn layui-btn-xs" lay-event="SN">序列号</a>
+</script>
+<script type="text/javascript">
+    layui.use(['form', 'table'], function () {
+        var form = layui.form, table = layui.table;
+        form.render();
+        $.ajax({
+            url: '/Warehouse/WarehouseList',
+            type: 'post',
+            dataType: 'json',
+            success: function (backData) {
+                $.each(backData.data, function (key, val) {
+                    var opt = $("<option></option>").val(val.ID).html(val.HouseName);
+                    $('#HouseID').append(opt);
+                    form.render('select');
+                });
+            }
+        });
+
+        var InitTable = table.render({
+            elem: '#table',
+            toolbar: '#toolbar',
+            height: 'full-35',
+            page: true,
+            limit: 30,
+            limits: [10, 20, 30, 50, 100],
+            text: { none: '没有任何库存' },
+            even: true,
+            size: 'sm',
+            url: '/Inventory/GetList',
+            cols: [[
+                { type: 'numbers', title: '', width: 35 },
+                { field: 'HouseName', title: '所属仓库', width: 150, sort: true, align: 'center' },
+                { field: 'ProName', title: '商品名称', width: 150, sort: true, align: 'center' },
+                { field: 'AssistCode', title: '辅助码', width: 100, sort: false, align: 'center' },
+                { field: 'Specs', title: '规格', width: 100, sort: true, align: 'center' },
+                { field: 'Model', title: '型号', width: 100, sort: true, align: 'center' },
+                { field: 'MainUnit', title: '主计量单位', width: 90, sort: false, align: 'center', hide: true },
+                { field: 'MainNumber', title: '数量', width: 90, sort: false, align: 'center', hide: true },
+                { field: 'InventoryUnit', title: '计量单位', width: 80, sort: false, align: 'center' },
+                { field: 'InventoryNumber', title: '数量', width: 60, sort: false, align: 'center' },
+                { field: 'AssistUnit', title: '辅助单位', width: 80, sort: false, align: 'center' },
+                { field: 'AssistNumber', title: '数量', width: 60, sort: false, align: 'center' },
+                { field: 'IsFloat', title: '是否浮动', width: 80, sort: false, align: 'center' },
+                { field: 'OnlyUnit', title: '是否单一计量单位', width: 80, sort: true, align: 'center', hide: true },
+                { fixed: 'right', width: 150, align: 'center', toolbar: '#bar' }
+            ]]
+        });
+        table.on('toolbar(table)', function (obj) {
+            if (obj.event == "query") {
+                var param = {
+                    ProName: $('#ProName').val(),
+                    AssistCode: $('#AssistCode').val(),
+                    HouseID: $('#HouseID').val()
+                };
+                InitTable.reload({
+                    where: param,
+                    curr: 1
+                });
+            }
+        })
+    })
+</script>
+

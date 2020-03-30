@@ -1,0 +1,127 @@
+﻿
+@{
+    ViewBag.Title = "EditIndex";
+    Layout = "~/Views/Shared/_lay.cshtml";
+}
+
+<script src="~/Content/lay/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/jquery.validate.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/messages_zh.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.all.js"></script>
+
+<script src="~/Content/lay/FrameWork.js" type="text/javascript"></script>
+
+<script>
+    //获取地址栏参数的方法
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+
+    var ID = $.request("ids");
+
+    var HouseName1 = $.request(decodeURI(decodeURI("HouseName")));
+    var HouseName = decodeURI(HouseName1); //只需要转一次码
+    var Address1 = getQueryString("Address"); //获取地址栏参数
+    var Address = decodeURI(Address1); //只需要转一次码
+    //var databasePath = $.request("databasePath");
+    var HouseType1 = getQueryString("HouseType"); //获取地址栏参数
+    var HouseType = decodeURI(HouseType1); //只需要转一次码
+    var Remark1 = getQueryString("Remark"); //获取地址栏参数
+    var Remark = decodeURI(Remark1); //只需要转一次码
+    $(function () {
+      
+        if (!!ID) {
+            var data = { "ID": ID, "HouseName": HouseName, "Address": Address, "HouseType": HouseType, "Remark": Remark}
+                    $("#form1").formSerialize(data);
+
+        }
+    });
+    function submitForm() {
+        $("#form1").validate({
+            rules: {
+                HouseName: "required",
+                Address: "required",
+            }
+        });
+        if ($('#form1').valid()) {
+            //$.loading(true, "正在提交数据");
+            window.setTimeout(function () {
+                $.ajax({
+                    url: "/Warehouse/EditHouse/",
+                    data: $('#form1').serialize(),
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        //$.loading(false);
+                        if (data.Code == "0000") {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            //$.currentWindow().$("#currentTableId").trigger("reloadGrid");
+                            parent.location.reload();
+                            var msgs = (data.Msg);
+                            top.layer.msg(msgs, { icon: 1 });
+                            parent.layer.close(index);
+
+                        }
+                        else {
+                            top.layer.msg(data.Msg, { icon: 2 });
+
+                        }
+                    },
+                    error: function () {
+                        //$.loading(false);
+
+                    },
+                    complete: function () {
+                        //$.loading(false);
+                    }
+                });
+
+            }, 500);
+        }
+    }
+
+</script>
+<div style="margin-right:30px;padding-top:10px;">
+    <form id="form1" class="form-horizontal">
+        <div style="position:absolute; padding-right:10px;">
+            <table class="form">
+                <tr style="display:none">
+                    <th class="formTitle">编号</th>
+                    <td class="formValue">
+                        <input id="ID" name="ID" type="text" class="form-control" placeholder="编号" readonly style="color:#999" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">名称</th>
+                    <td class="formValue">
+                        <input id="HouseName" name="HouseName" type="text" class="form-control" placeholder="名称" />
+                    </td>
+                </tr>
+              
+                <tr>
+                    <th class="formTitle">类型:</th>
+                    <td class="formValue">
+                        <input id="HouseType" name="HouseType" type="text" class="form-control" placeholder="类型" />
+                    </td>
+
+                </tr>
+                <tr>
+                    <th class="formTitle">地址</th>
+                    <td class="formValue">
+                        <input id="Address" name="Address" type="text" class="form-control" placeholder="地址" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">备注</th>
+                    <td class="formValue">
+                        <input id="Remark" name="Remark" type="text" class="form-control" placeholder="备注" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+

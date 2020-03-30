@@ -1,0 +1,510 @@
+﻿
+@{
+    /**/
+
+    ViewBag.Title = "EditIndex";
+    Layout = "~/Views/Shared/_layui.cshtml";
+}
+<script src="~/Content/lay/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/jquery.validate.js" type="text/javascript"></script>
+<script src="~/Content/lib/jquery-validation/dist/messages_zh.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.js" type="text/javascript"></script>
+<script src="~/Content/layui/layui.all.js"></script>
+
+<script src="~/Content/lay/FrameWork.js" type="text/javascript"></script>
+<div style="padding-top:10px; height:90px">
+    <form id="form1" class="form-horizontal">
+        <div style="position:absolute; padding:10px; ">
+            <table class="form">
+                <tr style="display:none">
+                    <th class="formTitle">商品编码</th>
+                    <td class="formValue">
+                        <input id="SID" name="SID" type="text" class="form-control" placeholder="商品编码" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle"><span>*</span>商品名称</th>
+                    <td class="formValue">
+                        <input id="ProName" name="ProName" type="text" class="form-control" placeholder="商品名称" />
+                    </td>
+                    <th class="formTitle"><span>*</span>助记码</th>
+                    <td class="formValue">
+                        <input id="AssistCode" name="AssistCode" type="text" class="form-control" placeholder="助记码" />
+                    </td>
+                    <th class="formTitle"><span>*</span>条码</th>
+                    <td class="formValue">
+                        <input id="BarCode" name="BarCode" type="text" class="form-control" placeholder="客户税号" />
+
+                    </td>
+                    <th class="formTitle">规格</th>
+                    <td class="formValue">
+                        <input id="Specs" name="Specs" type="text" class="form-control" placeholder="规格" />
+                    </td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <th class="formTitle">型号</th>
+                    <td class="formValue">
+                        <input id="Model" name="Model" type="text" class="form-control" placeholder="型号" />
+                    </td>
+                    <th class="formTitle">生产厂家</th>
+                    <td class="formValue">
+                        <input id="FactryName" name="FactryName" type="text" class="form-control" placeholder="生产厂家" />
+                    </td>
+                    <th class="formTitle">备注</th>
+                    <td class="formValue">
+                        <input id="Remark" name="Remark" type="text" class="form-control" placeholder="备注" />
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+<style>
+    .form span {
+        color: #ff0000
+    }
+</style>
+<div class="layui-form-item">
+    <table class="layui-hide" id="unittable" lay-filter="unittable"></table>
+</div>
+<style>
+    th {
+        text-align: right;
+        font-weight: 400;
+        font-size: 12px
+    }
+
+    td {
+        padding: 5px;
+        font-weight: 400;
+        font-size: 12px
+    }
+
+    input {
+        height: 20px
+    }
+</style>
+<script type="text/javascript">
+    var InitTable;
+    var form, table;
+    var tdata ;
+    var SID = $.request("id");
+    //$.ajax({
+    //    url: "/Product/GetUnitList",
+    //    data: { ProductID: SID},
+    //    type: "post",
+    //    dataType: "json",
+    //    success: function (data) {
+    //        //$.loading(false);
+
+    //        tdata = data.Units;
+
+    //    },
+    //    error: function () {
+    //        //$.loading(false);
+
+    //    },
+    //    complete: function () {
+    //        //$.loading(false);
+    //    }
+    //});
+    layui.use(['form', 'table'], function () {
+        var form = layui.form, table = layui.table;
+        form.render();
+       
+        InitTable = table.render({
+            elem: '#unittable',
+            id: 't1',
+            url: '/Product/GetUnitList?ProductID=' + SID,
+            //data: tdata,
+            height: 'full-100',
+            cols: [[
+                { type: 'numbers', title: '编号', width: 50, fixed: 'fixed' },
+                { type: "radio", width: 50, title: '选择', fixed: "left" },
+                { field: 'ID', width: 50, align: 'center', hide: true },
+                //{ field: 'ProID', width: 50, align: 'center', hide: true },
+                { field: 'UnitID', width: 50, align: 'center', hide: true },
+                { field: 'Rate', width: 90, title: '转化率', align: 'center' },
+                {
+                    field: 'IsMaster', width: 130, title: '是否主单位', align: 'center', templet: function (d) {
+                        if (d.IsMaster == "0") {
+                            return '是';
+                        } else {
+                            return '否'
+                        }
+                    }
+                },
+                { field: 'UnitName', width: 200, title: '单位名称', align: 'center' },
+                { field: 'Remark', width: 80, title: '备注', align: 'center' },
+                { field: 'Creator', width: 50, title: '创建人', align: 'center', hide: true },
+                { field: 'CreatDate', width: 50, title: '创建日期', align: 'center', hide: true }
+            ]],
+            page: true,
+            limit: 20,
+            limits: [20, 40, 60, 80, 100],
+            text: { none: '无相关数据' },
+            toolbar: 'default',
+            defaultToolbar: ['filter', 'exports']
+        });
+        form.on('submit(query)', function (data) {
+            var param = data.field;
+            InitTable.reload({
+                where: param,
+                page: { curr: 1 }
+            });
+            return false;
+        });
+
+        //监听头工具栏事件
+        table.on('toolbar(unittable)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id)
+                , data = checkStatus.data; //获取选中的数据
+            switch (obj.event) {
+                case 'add':
+                    add();
+                    break;
+                case 'update':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else if (data.length > 1) {
+                        layer.msg('只能同时编辑一个');
+                    } else {
+                        edit(data);
+
+                    }
+                    break;
+                case 'delete':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else {
+                        dele(data);
+                    }
+                    break;
+            };
+        });
+        //监听行工具事件
+        table.on('tool(unittable)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                , layEvent = obj.event; //获得 lay-event 对应的值
+            if (layEvent === 'detail') {
+                layer.msg('查看操作');
+            } else if (layEvent === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    // obj.del(); //删除对应行（tr）的DOM结构
+                    var params = {
+                        'bid': data.ID,
+                    }
+
+                    dele(params);
+                    layer.close(index);
+                    //向服务端发送删除指令
+                });
+            } else if (layEvent === 'edit') {
+
+                edit(data)
+            }
+            else if (obj.event === 'changeStatus') {
+                var ids = data.SID;
+                var status1 = data.Status;
+                var status = "0";
+                if (status1 == "0") {
+                    status = "1";
+                }
+                else if (status1 == "1") {
+                    status = "0";
+                }
+                $.ajax({
+                    url: "/Client/ChangeStatus/",
+                    data: { SID: ids, status: status },
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        //$.loading(false);
+
+                        if (data.Code == "0000") {
+                            var msgs = (data.Msg);
+                            top.layer.msg(msgs, { icon: 1 });
+                            parent.location.reload();
+                        }
+                        else {
+
+                            top.layer.msg(data.Msg, { icon: 2 });
+                        }
+
+                    },
+                    error: function () {
+                        //$.loading(false);
+
+                    },
+                    complete: function () {
+                        //$.loading(false);
+                    }
+                });
+            }
+        });
+        function edit(data) {
+            var idb = data[0].ID;
+            var ids = data[0].UnitID;
+            var Rate = data[0].Rate;
+            var IsMaster = data[0].IsMaster;
+            var Remark = data[0].Remark;
+            var rudata = layui.table.cache.t1;
+            localStorage.setItem('Unitdata', JSON.stringify(rudata));
+            var url = "/Product/EditUnitIndex1" + "?id=" + idb + "&ids=" + ids + "&Rate=" + encodeURI(encodeURI(Rate)) + "&IsMaster=" + encodeURI(encodeURI(IsMaster)) + "&Remark=" + encodeURI(encodeURI(Remark));
+            $.FromOpen('ProductFromEditUnit1', '修改计量单位', url, '1000px', '600px', '10001');
+            //layer.open({
+            //    type: 2,
+            //    title: '修改',
+            //    area: ['1000px', '400px'],
+            //    offset: '160px',
+            //    shadeClose: true, // 点击遮罩关闭
+            //    btn: ['保存', '取消'],
+            //    content: '/Product/EditIndex',
+            //    success: function (layero, index) { // 成功弹出后回调
+            //        layer.iframeAuto(index);
+            //        var body = layer.getChildFrame('body', index);  //巧妙的地方在这里哦
+            //        body.contents().find("#UnitID").val(data[0].UnitID);
+            //        body.contents().find("#Rate").val(data[0].Rate);
+            //        body.contents().find("#IsMaster").val(data[0].IsMaster);
+            //        body.contents().find("#UnitName").val(data[0].UnitName);
+            //        body.contents().find("#Remark").val(data[0].Remark);
+
+            //    },
+
+            //    yes: function (index, layero) { // 保存按钮回调函数
+            //        // 获取iframe层的body
+            //        var body = layer.getChildFrame('body', index);  //巧妙的地方在这里哦
+            //        // 找到隐藏的提交按钮模拟点击提交
+            //        // body.find('#permissionSubmit').click();
+            //        var UnitID = body.contents().find("#UnitID").val();
+            //        var Rate = body.contents().find("#Rate").val();
+            //        var IsMaster = body.contents().find("#IsMaster").val();
+            //        var UnitName = body.contents().find("#UnitName").val();
+            //        var Remark = body.contents().find("#Remark").val();
+
+            //        var params = {
+            //            'UnitID': UnitID,
+            //            'Rate': Rate,
+            //            'IsMaster': IsMaster,
+            //            'UnitName': UnitName,
+            //            'Remark': Remark,
+
+            //        };
+            //        upbook(params);
+            //        layer.close(index);
+            //    },
+            //    btn2: function (index, layero) { // 取消按钮回调函数
+            //        layer.close(index); // 关闭弹出层
+            //    }
+
+
+            //});
+        }
+
+
+
+
+        function add() {
+            var SID = $.request("id");
+            var rudata = layui.table.cache.t1;
+            localStorage.setItem('Unitdata', JSON.stringify(rudata));
+            $.FromOpen('ProductFromAddUnitIndex1', '新增计量单位', '/Product/AddUnitIndex1?id=' + SID, '1000px', '600px', '10001');
+            //layer.open({
+            //    type: 2,
+            //    title: '新增产品',
+            //    area: ['1000px', '600px'],
+            //    offset: '160px',
+            //    shadeClose: true, // 点击遮罩关闭
+            //    btn: ['保存', '取消'],
+            //    content: '/Product/AddIndex',
+            //    success: function (layero, index) { // 成功弹出后回调
+
+            //    },
+
+            //    yes: function (index, layero) { // 保存按钮回调函数
+            //        // 获取iframe层的body
+            //        // var body = layer.getChildFrame('body', index);
+            //        // 找到隐藏的提交按钮模拟点击提交
+            //        //  body.find('#permissionSubmit').click();
+            //        layer.iframeAuto(index);
+            //        var body = layer.getChildFrame('body', index);  //巧妙的地方在这里哦
+            //        var UnitID = body.contents().find("#UnitID").val();
+            //        var Rate = body.contents().find("#Rate").val();
+            //        var IsMaster = body.contents().find("#IsMaster").val();
+            //        var UnitName = body.contents().find("#UnitName").val();
+            //        var Remark = body.contents().find("#Remark").val();
+
+            //        var params = {
+            //            'UnitID': UnitID,
+            //            'Rate': Rate,
+            //            'IsMaster': IsMaster,
+            //            'UnitName': UnitName,
+            //            'Remark': Remark,
+
+            //        };
+            //        addtabls(params);
+            //        layer.close(index);
+            //    },
+            //    btn2: function (index, layero) { // 取消按钮回调函数
+            //        layer.close(index); // 关闭弹出层
+            //    }
+
+
+            //});
+        }
+
+        function upbook(params) {
+            $.ajax({
+                url: "/Product/EditProduct",
+                type: "post",
+                dataType: 'json',
+                data: params,
+                success: function (data) {
+                    if (data.Code == "0000") {
+
+
+                        var msgs = (data.Msg);
+                        top.layer.msg(msgs, { icon: 1 });
+                        parent.location.reload();
+
+                    }
+                    else {
+                        top.layer.msg(data.Msg, { icon: 2 });
+
+                    }
+                    layer.msg('修改成功');
+                    tables();
+                },
+                error: function (or) {
+                    alert('失败')
+                }
+            })
+        }
+
+        function addtabls(params) {
+            $.ajax({
+                url: "/Product/AddProduct",
+                type: "post",
+                dataType: 'json',
+                data: params,
+                success: function (data) {
+                    layer.msg('新增成功');
+                    tables();
+                },
+                error: function (or) {
+                    alert('失败')
+                }
+            })
+        }
+
+
+        function dele(data) {
+            var rudata = layui.table.cache.t1;
+           
+            var idb = data[0].ID;
+            var jdata = [];
+            for (var i = 0; i < rudata.length; i++) {
+                if (rudata[i].ID != idb) {
+                    jdata.push(rudata[i])
+                }
+
+
+            }
+            localStorage.setItem('Unitdata', JSON.stringify(jdata));
+            shuaxinb();
+        }
+    })
+    function shuaxinb() {
+        var udata1 = localStorage.getItem("Unitdata");
+        var udata = JSON.parse(udata1);
+        form = layui.form;
+        if (udata != null) {
+            table = layui.table;
+            table.reload('t1', {
+                url:'',
+                data: udata
+            });
+            form.render();
+        }
+    }
+    function submitForm() {
+        $("#form1").validate({
+            rules: {
+                ProName: "required",
+                AssistCode: "required",
+            }
+        });
+        if ($('#form1').valid()) {
+
+
+            //var sudata1 = localStorage.getItem("Unitdata");
+            //var sudata = JSON.parse(sudata1);
+            //if (sudata1 != null && sudata1 != "" && sudata1 != undefined) {
+            //    sudata = JSON.parse(sudata1);
+            //}
+            //else {
+        //}
+            var   sudata = layui.table.cache.t1;
+           
+            SID = $('#SID').val();
+            ProName = $('#ProName').val();
+            AssistCode = $('#AssistCode').val();
+            BarCode = $('#BarCode').val();
+            Specs = $('#Specs').val();
+            Model = $('#Model').val();
+            FactryName = $('#FactryName').val();
+            Remark = $('#Remark').val();
+            var datapro = {
+                "SID": SID,
+                "ProName": ProName,
+                "AssistCode": AssistCode,
+                "BarCode": BarCode,
+                "Specs": Specs,
+                "Model": Model,
+                "FactryName": FactryName,
+                "Remark": Remark,
+                "Unit": sudata
+            };
+            //$.loading(true, "正在提交数据");
+            window.setTimeout(function () {
+                $.ajax({
+                    url: "/Product/EditProduct/",
+                    data: { model: datapro },
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        //$.loading(false);
+
+                        if (data.Code == "0000") {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            //$.currentWindow().$("#currentTableId").trigger("reloadGrid");
+                            parent.location.reload();
+                            var msgs = (data.Msg);
+                            top.layer.msg(msgs, { icon: 1 });
+                            parent.layer.close(index);
+                            localStorage.removeItem("Unitdata");
+                        }
+                        else {
+
+                            top.layer.msg(data.Msg, { icon: 2 });
+                            localStorage.removeItem("Unitdata");
+                        }
+
+                    },
+                    error: function () {
+                        //$.loading(false);
+
+                    },
+                    complete: function () {
+                        //$.loading(false);
+                    }
+                });
+
+            }, 500);
+        }
+    }
+</script>
+
+

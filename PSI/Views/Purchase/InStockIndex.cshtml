@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewBag.Title = "InStockIndex";
+    Layout = "~/Views/Shared/_layui.cshtml";
+}
+
+<div class="layui-card" style="padding-top:6px">
+    <div class="layui-form" lay-filter="query" id="query">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label" style="width:60px">单据日期</label>
+                <div class="layui-input-inline" style="width: 100px;">
+                    <input type="text" name="rq_s" autocomplete="off" class="layui-input" id="rq_s" />
+                </div>
+                <div class="layui-form-mid">-</div>
+                <div class="layui-input-inline" style="width: 100px;">
+                    <input type="text" name="rq_e" autocomplete="off" class="layui-input" id="rq_e">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label" style="width:60px">客户名称</label>
+                <div class="layui-input-inline" style="width: 100px;">
+                    <input type="text" name="rq_s" autocomplete="off" class="layui-input" id="rq_s" />
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label" style="width:60px">单据状态</label>
+                <div class="layui-input-inline" style="width: 100px;">
+                    <select name="rq_s" class="layui-input" id="rq_s">
+                        <option value="">全部</option>
+                        <option value="0">待审核</option>
+                        <option value="1">已审核</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <button class="layui-btn" lay-submit lay-filter="query">查询</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="layui-card" style="margin:0px 0px 0px 0px">
+    <table id="table" class="layui-hide" lay-filter="table"></table>
+</div>
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-group">
+        <button type="button" class="layui-btn layui-btn-sm" id="add" lay-event="add">
+            <i class="layui-icon">&#xe654;</i>添加
+        </button>
+        <button type="button" class="layui-btn layui-btn-sm" id="edit">
+            <i class="layui-icon">&#xe642;</i>删除
+        </button>
+        <button type="button" class="layui-btn layui-btn-sm" id="audit">
+            <i class="layui-icon">&#x1005;</i>审核
+        </button>
+        <button type="button" class="layui-btn layui-btn-sm" id="reaudit">
+            <i class="layui-icon">&#xe64d;</i>反审
+        </button>
+        <button type="button" class="layui-btn layui-btn-sm" id="del">
+            <i class="layui-icon">&#xe640;</i>删除
+        </button>
+        <button type="button" class="layui-btn layui-btn-sm" id="print">
+            <i class="layui-icon">&#xe66d;</i>打印
+        </button>
+    </div>
+</script>
+
+<script type="text/javascript">
+    var btnTips;
+    layui.use(['form', 'table', 'laydate','layer'], function () {
+        var form = layui.form, table = layui.table, laydate = layui.laydate, layer = layui.layer;
+        laydate.render({
+            elem: '#rq_e' //指定元素
+        });
+        laydate.render({
+            elem: '#rq_s'
+        });
+        form.render();
+        var InitTable = table.render({
+            elem: '#table',
+            toolbar: '#toolbar',
+            height: 'full-35',
+            page: true,
+            limit: 30,
+            limits: [10, 20, 30, 50, 100],
+            text: { none: '没有任何单据' },
+            even: true,
+            size: 'sm',
+            //url: '',
+            data: [],
+            cols: [[
+                { type: 'numbers', title: '', width: 35 },
+                { field: 'HouseName', title: '单据编号', width: 150, sort: true, align: 'center' },
+                { field: 'ProName', title: '单据日期', width: 90, sort: true, align: 'center' },
+                { field: 'AssistCode', title: '客户名称', width: 260, sort: false, align: 'center' },
+                { field: 'Specs', title: '单据金额', width: 120, sort: false, align: 'center' },
+                { field: 'Model', title: '单据状态', width: 100, sort: true, align: 'center' },
+                { fixed: 'right', width: 150, align: 'center', toolbar: '#bar' }
+            ]]
+        });
+        table.on('toolbar(table)', function (obj) {
+            if (obj.event == "add") {
+                top.layer.open({
+                    type: 2,
+                    content: '/Purchase/InStockBill',
+                    id: 'addBill',
+                    closeBtn: 1,
+                    area: ['1600px', '860px'],
+                    title:false
+                })
+            }
+        })
+    })
+</script>
+

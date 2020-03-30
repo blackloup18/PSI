@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewBag.Title = "EditIndex";
+    Layout = "~/Views/Shared/_lay.cshtml";
+}
+
+<div style="padding-top:10px; height:300px">
+    <form id="form1" class="form-horizontal">
+        <div style="position:absolute; padding:10px; ">
+            <table class="form">
+                <tr style="display:none">
+                    <th class="formTitle">SID</th>
+                    <td class="formValue">
+                        <input id="SID" name="SID" type="text" class="form-control" placeholder="SID" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle"><span>*</span>客户名称</th>
+                    <td class="formValue">
+                        <input id="ClientName" name="ClientName" type="text" class="form-control" placeholder="客户名称" />
+                    </td>
+                    <th class="formTitle"><span>*</span>客户税号</th>
+                    <td class="formValue">
+                        <input id="ClientCode" name="ClientCode" type="text" class="form-control" placeholder="客户税号" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle"><span>*</span>客户类型</th>
+                    <td class="formValue">
+                        <select id="ClientType" name="ClientType" lay-search class="form-control" lay-verify="required" lay-filter="ClientType" style="width:92%">
+                            <option value="">==请选择==</option>
+                            <option value="C">供应商</option>
+                            <option value="G">客户</option>
+                        </select>
+
+                    </td>
+                    <th class="formTitle">地址</th>
+                    <td class="formValue">
+                        <input id="Address" name="Address" type="text" class="form-control" placeholder="地址" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">联系人</th>
+                    <td class="formValue">
+                        <input id="Contact" name="Contact" type="text" class="form-control" placeholder="联系人" />
+                    </td>
+                    <th class="formTitle">联系电话</th>
+                    <td class="formValue">
+                        <input id="Phone" name="Phone" type="text" class="form-control" placeholder="联系电话" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">微信</th>
+                    <td class="formValue">
+                        <input id="WeChat" name="WeChat" type="text" class="form-control" placeholder="微信" />
+                    </td>
+                    <th class="formTitle">QQ</th>
+                    <td class="formValue">
+                        <input id="QQ" name="QQ" type="text" class="form-control" placeholder="QQ" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">电子邮箱</th>
+                    <td class="formValue">
+                        <input id="Email" name="Email" type="text" class="form-control" placeholder="电子邮箱" />
+                    </td>
+                    <th class="formTitle">传真</th>
+                    <td class="formValue">
+                        <input id="Fax" name="Fax" type="text" class="form-control" placeholder="传真" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">银行</th>
+                    <td class="formValue">
+                        <input id="Bank" name="Bank" type="text" class="form-control" placeholder="银行" />
+                    </td>
+                    <th class="formTitle">账号</th>
+                    <td class="formValue">
+                        <input id="Account" name="Account" type="text" class="form-control" placeholder="账号" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">备注</th>
+                    <td class="formValue">
+                        <input id="Remark" name="Remark" type="text" class="form-control" placeholder="备注" />
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+<style>
+    span {
+        color: #ff0000
+    }
+</style>
+
