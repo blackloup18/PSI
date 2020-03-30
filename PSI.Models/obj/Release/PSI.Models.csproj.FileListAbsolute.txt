@@ -1,9 +1,0 @@
-C:\Users\Administrator\source\repos\PSI\PSI.Models\bin\Release\PSI.Models.dll
-C:\Users\Administrator\source\repos\PSI\PSI.Models\bin\Release\PSI.Models.pdb
-C:\Users\Administrator\source\repos\PSI\PSI.Models\bin\Release\PSI.Conn.dll
-C:\Users\Administrator\source\repos\PSI\PSI.Models\bin\Release\PSI.Conn.pdb
-C:\Users\Administrator\source\repos\PSI\PSI.Models\obj\Release\PSI.Models.csprojAssemblyReference.cache
-C:\Users\Administrator\source\repos\PSI\PSI.Models\obj\Release\PSI.Models.csproj.CoreCompileInputs.cache
-C:\Users\Administrator\source\repos\PSI\PSI.Models\obj\Release\PSI.Models.csproj.CopyComplete
-C:\Users\Administrator\source\repos\PSI\PSI.Models\obj\Release\PSI.Models.dll
-C:\Users\Administrator\source\repos\PSI\PSI.Models\obj\Release\PSI.Models.pdb
